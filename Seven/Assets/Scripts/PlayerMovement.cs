@@ -20,6 +20,11 @@ public class PlayerMovement : MonoBehaviour
     private LayerMask jumpableGround;
 
 
+    private int keyHeldDownCounter = 0;
+    [SerializeField]
+    private int ringPartCounts = 360;
+    private float ringSteps;
+
     private enum MovementState { idle, running, jumping, falling }
 
     private MovementState state = MovementState.idle;
@@ -31,6 +36,8 @@ public class PlayerMovement : MonoBehaviour
         anim = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
         coll = GetComponent<BoxCollider2D>();
+
+        ringSteps = (float)360 / ringPartCounts;
     }
 
     // Update is called once per frame
@@ -44,32 +51,50 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity=new Vector2(rb.velocity.x, jumpForce);
         }
 
-        if(Input.GetButtonDown("Fire1"))
+
+
+        UpdateAnimationState();
+    }
+
+    private void FixedUpdate()
+    {
+        if (Input.GetButton("Fire1"))
         {
             StartAim();
         }
 
-        if(Input.GetButtonUp("Fire1"))
+        if (Input.GetButtonUp("Fire1"))
         {
             EndAim();
         }
+    }
 
-
-        UpdateAnimationState();
+    public Vector2 RotateVector(Vector2 v, float angle)
+    {
+        float radian = angle * Mathf.Deg2Rad;
+        float _x = v.x * Mathf.Cos(radian) - v.y * Mathf.Sin(radian);
+        float _y = v.x * Mathf.Sin(radian) + v.y * Mathf.Cos(radian);
+        return new Vector2(_x, _y);
     }
 
     private void StartAim()
     {
         Debug.Log("start aimming");
 
-        //Debug.DrawLine(transform.position, Vector2.right * lineLength, Color.red, 10f, false);
+        float degree = keyHeldDownCounter * ringSteps;
 
-        Debug.DrawRay(transform.position, transform.right, Color.red, 5f, false);
+        Vector2 aimingDirection = RotateVector(Vector2.up, -degree);
+
+        Debug.Log(aimingDirection);
+
+        Debug.DrawRay(transform.position, aimingDirection, Color.red);
+        keyHeldDownCounter++;
     }
 
     private void EndAim()
     {
         Debug.Log("stop aimming");
+        keyHeldDownCounter = 0;
     }
 
     private void UpdateAnimationState()
