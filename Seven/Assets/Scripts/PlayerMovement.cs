@@ -25,6 +25,9 @@ public class PlayerMovement : MonoBehaviour
     private int ringPartCounts = 360;
     private float ringSteps;
 
+    private Vector2 aimingDirection;
+    private Vector2 aimingEnd;
+
     private enum MovementState { idle, running, jumping, falling }
 
     private MovementState state = MovementState.idle;
@@ -51,7 +54,10 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity=new Vector2(rb.velocity.x, jumpForce);
         }
 
-
+        if (Input.GetButtonUp("Fire1"))
+        {
+            EndAim();
+        }
 
         UpdateAnimationState();
     }
@@ -63,10 +69,7 @@ public class PlayerMovement : MonoBehaviour
             StartAim();
         }
 
-        if (Input.GetButtonUp("Fire1"))
-        {
-            EndAim();
-        }
+ 
     }
 
     public Vector2 RotateVector(Vector2 v, float angle)
@@ -83,17 +86,30 @@ public class PlayerMovement : MonoBehaviour
 
         float degree = keyHeldDownCounter * ringSteps;
 
-        Vector2 aimingDirection = RotateVector(Vector2.up, -degree);
+        aimingDirection = RotateVector(Vector2.up, -degree).normalized;
 
-        Debug.Log(aimingDirection);
+        aimingEnd = new Vector2(transform.position.x, transform.position.y) + lineLength * aimingDirection;
 
-        Debug.DrawRay(transform.position, aimingDirection, Color.red);
+
+        Debug.DrawLine(transform.position, aimingEnd, Color.red);
+
+
         keyHeldDownCounter++;
     }
 
     private void EndAim()
     {
         Debug.Log("stop aimming");
+
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, aimingDirection, lineLength, jumpableGround);
+        if (hit.collider != null)
+        {
+            Debug.Log("contact point: " + hit.point );
+            rb.MovePosition(hit.point);
+        }
+
+
+
         keyHeldDownCounter = 0;
     }
 
