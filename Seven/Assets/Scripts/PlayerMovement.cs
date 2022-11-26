@@ -13,12 +13,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float moveSpeed = 7f;
     [SerializeField]
-    private float jumpForce = 14f;
-    [SerializeField]
     private float lineLength = 10f;
     [SerializeField]
-    private LayerMask jumpableGround;
-
+    private LayerMask grabbaleLayer;
 
     private int keyHeldDownCounter = 0;
     [SerializeField]
@@ -49,10 +46,6 @@ public class PlayerMovement : MonoBehaviour
         dirX = Input.GetAxisRaw("Horizontal");
         rb.velocity = new Vector2(dirX * moveSpeed, rb.velocity.y);
 
-        if(Input.GetButtonDown("Jump") && IsGrounded())
-        {
-            rb.velocity=new Vector2(rb.velocity.x, jumpForce);
-        }
 
         if (Input.GetButtonUp("Fire1"))
         {
@@ -68,8 +61,6 @@ public class PlayerMovement : MonoBehaviour
         {
             StartAim();
         }
-
- 
     }
 
     public Vector2 RotateVector(Vector2 v, float angle)
@@ -101,7 +92,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Debug.Log("stop aimming");
 
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, aimingDirection, lineLength, jumpableGround);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, aimingDirection, lineLength, grabbaleLayer);
         if (hit.collider != null)
         {
             Debug.Log("contact point: " + hit.point );
@@ -132,11 +123,7 @@ public class PlayerMovement : MonoBehaviour
             state = MovementState.idle;
         }
 
-        if(rb.velocity.y > 0.1f)
-        {
-            state = MovementState.jumping;
-        }
-        else if (rb.velocity.y < -0.1f)
+        if (rb.velocity.y < -0.1f)
         {
             state = MovementState.falling;
         }
@@ -144,8 +131,4 @@ public class PlayerMovement : MonoBehaviour
         anim.SetInteger("state", (int)state);
     }
 
-    private bool IsGrounded()
-    {
-        return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f, jumpableGround);
-    }
 }
