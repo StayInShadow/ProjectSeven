@@ -678,7 +678,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grabbaleLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   lineLength: 10
   grapplingSpeed: 2
   ringPartCounts: 360
