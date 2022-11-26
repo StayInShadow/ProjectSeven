@@ -9,23 +9,41 @@ public class PlayerMovement : MonoBehaviour
     private SpriteRenderer sprite;
     private Animator anim;
 
-    private float dirX = 0f;
+    [Header("Grappling")]
     [SerializeField]
-    private float moveSpeed = 7f;
+    private LayerMask grabbaleLayer;
     [SerializeField]
     private float lineLength = 10f;
     [SerializeField]
-    private LayerMask grabbaleLayer;
-
-    private int keyHeldDownCounter = 0;
+    private float grapplingSpeed = 2f;
     [SerializeField]
     private int ringPartCounts = 360;
+
+    private int keyHeldDownCounter = 0;
+
     private float ringSteps;
 
     private Vector2 aimingDirection;
+
     private Vector2 aimingEnd;
 
-    private enum MovementState { idle, running, jumping, falling }
+    private float grappingStartTime;
+    private Vector2 grapplingStartPosition;
+    private Vector2 grapplingEndPosition;
+    private float grappingLength;
+    private bool isGrappling;
+
+    [Header("Movement")]
+    [SerializeField]
+    private float moveSpeed = 7f;
+
+    private float dirX = 0f;
+
+
+
+
+
+    private enum MovementState { idle, running, falling }
 
     private MovementState state = MovementState.idle;
 
@@ -38,6 +56,16 @@ public class PlayerMovement : MonoBehaviour
         coll = GetComponent<BoxCollider2D>();
 
         ringSteps = (float)360 / ringPartCounts;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!isGrappling) return;
+        if(collision.IsTouchingLayers(grabbaleLayer))
+        {
+            EndGrappling();
+        }
+
     }
 
     // Update is called once per frame
@@ -61,6 +89,7 @@ public class PlayerMovement : MonoBehaviour
         {
             StartAim();
         }
+        Grappling();
     }
 
     public Vector2 RotateVector(Vector2 v, float angle)
@@ -96,12 +125,38 @@ public class PlayerMovement : MonoBehaviour
         if (hit.collider != null)
         {
             Debug.Log("contact point: " + hit.point );
-            rb.MovePosition(hit.point);
+            StartGrappling(hit.point);
         }
 
 
 
         keyHeldDownCounter = 0;
+    }
+
+    private void StartGrappling(Vector2 aGrapplingDestination)
+    {
+        isGrappling = true;
+        grappingStartTime = Time.time;
+        grapplingStartPosition = transform.position;
+        grapplingEndPosition = aGrapplingDestination;
+        grappingLength = Vector2.Distance(grapplingStartPosition, grapplingEndPosition);
+    }
+
+    private void Grappling()
+    {
+        if(isGrappling)
+        {
+            float distCovered = (Time.time - grappingStartTime) * grapplingSpeed;
+            float fractionOfJourney = distCovered / grappingLength;
+
+            transform.position = Vector3.Lerp(grapplingStartPosition, grapplingEndPosition, fractionOfJourney);
+        }
+    }
+
+    private void EndGrappling()
+    {
+        isGrappling = false;
+        rb.gravityScale = 0f;
     }
 
     private void UpdateAnimationState()
