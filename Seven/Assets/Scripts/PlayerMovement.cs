@@ -58,14 +58,22 @@ public class PlayerMovement : MonoBehaviour
         ringSteps = (float)360 / ringPartCounts;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!isGrappling) return;
-        if(collision.IsTouchingLayers(grabbaleLayer))
-        {
-            EndGrappling();
-        }
+        Debug.Log("collision name: " + collision.gameObject.name);
 
+        if (!isGrappling) return;
+
+        bool isGrabbale = collision.gameObject.layer == grabbaleLayer;
+
+        //if (isGrabbale)
+        //{
+        //    EndGrappling();
+
+        //    Debug.Log("isGrabable detacted!");
+
+        //    transform.parent = collision.gameObject.transform;
+        //}
     }
 
     // Update is called once per frame
@@ -89,20 +97,20 @@ public class PlayerMovement : MonoBehaviour
         {
             StartAim();
         }
+
+        if (Input.GetButton("Release"))
+        {
+            transform.parent = null;
+            Debug.Log("released! ");
+        }
+
         Grappling();
     }
 
-    public Vector2 RotateVector(Vector2 v, float angle)
-    {
-        float radian = angle * Mathf.Deg2Rad;
-        float _x = v.x * Mathf.Cos(radian) - v.y * Mathf.Sin(radian);
-        float _y = v.x * Mathf.Sin(radian) + v.y * Mathf.Cos(radian);
-        return new Vector2(_x, _y);
-    }
+
 
     private void StartAim()
     {
-        Debug.Log("start aimming");
 
         float degree = keyHeldDownCounter * ringSteps;
 
@@ -119,12 +127,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void EndAim()
     {
-        Debug.Log("stop aimming");
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, aimingDirection, lineLength, grabbaleLayer);
         if (hit.collider != null)
         {
-            Debug.Log("contact point: " + hit.point );
+            Debug.Log("contact point: " + hit.point + ", name: "+ hit.collider.name );
             StartGrappling(hit.point);
         }
 
@@ -136,6 +143,9 @@ public class PlayerMovement : MonoBehaviour
     private void StartGrappling(Vector2 aGrapplingDestination)
     {
         isGrappling = true;
+
+
+
         grappingStartTime = Time.time;
         grapplingStartPosition = transform.position;
         grapplingEndPosition = aGrapplingDestination;
@@ -149,14 +159,14 @@ public class PlayerMovement : MonoBehaviour
             float distCovered = (Time.time - grappingStartTime) * grapplingSpeed;
             float fractionOfJourney = distCovered / grappingLength;
 
-            transform.position = Vector3.Lerp(grapplingStartPosition, grapplingEndPosition, fractionOfJourney);
+            Vector3 newPosition = Vector3.Lerp(grapplingStartPosition, grapplingEndPosition, fractionOfJourney);
+            rb.MovePosition(newPosition);
         }
     }
 
     private void EndGrappling()
     {
         isGrappling = false;
-        rb.gravityScale = 0f;
     }
 
     private void UpdateAnimationState()
@@ -184,6 +194,14 @@ public class PlayerMovement : MonoBehaviour
         }
 
         anim.SetInteger("state", (int)state);
+    }
+
+    public Vector2 RotateVector(Vector2 v, float angle)
+    {
+        float radian = angle * Mathf.Deg2Rad;
+        float _x = v.x * Mathf.Cos(radian) - v.y * Mathf.Sin(radian);
+        float _y = v.x * Mathf.Sin(radian) + v.y * Mathf.Cos(radian);
+        return new Vector2(_x, _y);
     }
 
 }
