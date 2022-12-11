@@ -111,10 +111,14 @@ public class PlayerMovement : MonoBehaviour
 
         float degree = keyHeldDownCounter * ringSteps;
 
+        if (sprite.flipX)
+        {
+            degree = -degree;
+        }
+
         aimingDirection = RotateVector(Vector2.up, -degree).normalized;
 
         aimingEnd = new Vector2(transform.position.x, transform.position.y) + lineLength * aimingDirection;
-
 
         Debug.DrawLine(transform.position, aimingEnd, Color.red);
 
