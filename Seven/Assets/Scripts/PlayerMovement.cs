@@ -69,9 +69,7 @@ public class PlayerMovement : MonoBehaviour
         //if (isGrabbale)
         //{
         //    EndGrappling();
-
         //    Debug.Log("isGrabable detacted!");
-
         //    transform.parent = collision.gameObject.transform;
         //}
     }
@@ -101,13 +99,12 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButton("Release"))
         {
             transform.parent = null;
+            EndGrappling();
             Debug.Log("released! ");
         }
 
         Grappling();
     }
-
-
 
     private void StartAim()
     {
@@ -143,8 +140,6 @@ public class PlayerMovement : MonoBehaviour
     private void StartGrappling(Vector2 aGrapplingDestination)
     {
         isGrappling = true;
-
-
 
         grappingStartTime = Time.time;
         grapplingStartPosition = transform.position;
