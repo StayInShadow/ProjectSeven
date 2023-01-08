@@ -166,6 +166,9 @@ public class PlayerMovement : MonoBehaviour
     private void EndGrappling()
     {
         isGrappling = false;
+
+        this.transform.parent = null;
+        GetComponent<HingeJoint2D>().enabled = false;
     }
 
     private void UpdateAnimationState()
