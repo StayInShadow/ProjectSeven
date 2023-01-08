@@ -567,15 +567,15 @@ HingeJoint2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 118163532}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_EnableCollision: 0
-  m_ConnectedRigidBody: {fileID: 367483091}
+  m_ConnectedRigidBody: {fileID: 0}
   m_BreakForce: Infinity
   m_BreakTorque: Infinity
   m_AutoConfigureConnectedAnchor: 1
   m_Anchor: {x: 0, y: 0}
-  m_ConnectedAnchor: {x: -8.84, y: -3.9600003}
+  m_ConnectedAnchor: {x: -2.27, y: 0.16}
   m_UseMotor: 0
   m_Motor:
     m_MotorSpeed: 0
@@ -584,11 +584,6 @@ HingeJoint2D:
   m_AngleLimits:
     m_LowerAngle: 0
     m_UpperAngle: 90
---- !u!50 &367483091 stripped
-Rigidbody2D:
-  m_CorrespondingSourceObject: {fileID: 3313311614317290820, guid: 722a93ffbfeb178489e8b446f0ed2f12, type: 3}
-  m_PrefabInstance: {fileID: 3313311614633622935}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &495010005
 GameObject:
   m_ObjectHideFlags: 0
@@ -10461,6 +10456,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3313311613572289943, guid: 722a93ffbfeb178489e8b446f0ed2f12, type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3313311613572289943, guid: 722a93ffbfeb178489e8b446f0ed2f12, type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: -1.1199999
+      objectReference: {fileID: 0}
     - target: {fileID: 3313311614207024193, guid: 722a93ffbfeb178489e8b446f0ed2f12, type: 3}
       propertyPath: m_Name
       value: Grapple
@@ -10508,6 +10511,14 @@ PrefabInstance:
     - target: {fileID: 3313311614207024205, guid: 722a93ffbfeb178489e8b446f0ed2f12, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7535349586282969139, guid: 722a93ffbfeb178489e8b446f0ed2f12, type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: 6.59
+      objectReference: {fileID: 0}
+    - target: {fileID: 7535349586282969139, guid: 722a93ffbfeb178489e8b446f0ed2f12, type: 3}
+      propertyPath: m_ConnectedAnchor.y
+      value: 6.34
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 722a93ffbfeb178489e8b446f0ed2f12, type: 3}

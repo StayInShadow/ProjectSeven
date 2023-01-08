@@ -39,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
 
     private float dirX = 0f;
 
-
+    private GameObject grapplingParent = null;
 
 
 
@@ -64,14 +64,13 @@ public class PlayerMovement : MonoBehaviour
 
         if (!isGrappling) return;
 
-        bool isGrabbale = collision.gameObject.layer == grabbaleLayer;
+        bool isGrabbale = collision.gameObject.layer == 7;
 
-        //if (isGrabbale)
-        //{
-        //    EndGrappling();
-        //    Debug.Log("isGrabable detacted!");
-        //    transform.parent = collision.gameObject.transform;
-        //}
+        if (isGrabbale)
+        {
+            EndGrappling();
+
+        }
     }
 
     // Update is called once per frame
@@ -99,7 +98,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetButton("Release"))
         {
             transform.parent = null;
-            EndGrappling();
+            ReleaseGrapplingHook();
             Debug.Log("released! ");
         }
 
@@ -133,7 +132,12 @@ public class PlayerMovement : MonoBehaviour
         if (hit.collider != null)
         {
             Debug.Log("contact point: " + hit.point + ", name: "+ hit.collider.name );
-            StartGrappling(hit.point);
+
+            grapplingParent = hit.transform.GetComponentInChildren<GrapplingPoint>().gameObject;
+
+            Vector2 grapplingPoint = grapplingParent.GetComponent<GrapplingPoint>().m_GrapplingPoint.transform.position;
+
+            StartGrappling(grapplingPoint);
         }
 
 
@@ -167,11 +171,21 @@ public class PlayerMovement : MonoBehaviour
     {
         isGrappling = false;
 
+        var hinge = gameObject.GetComponent<HingeJoint2D>();
+        hinge.enabled = true;
+        hinge.connectedBody = grapplingParent.GetComponent<Rigidbody2D>();
+
+        Debug.Log("isGrabable detacted!");
+        transform.parent = grapplingParent.transform;
+    }
+
+    private void ReleaseGrapplingHook()
+    {
         this.transform.parent = null;
         GetComponent<HingeJoint2D>().enabled = false;
     }
 
-    private void UpdateAnimationState()
+        private void UpdateAnimationState()
     {
         MovementState state;
 
