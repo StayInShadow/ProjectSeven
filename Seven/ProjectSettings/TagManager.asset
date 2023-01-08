@@ -45,6 +45,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Particles
+    uniqueID: 2029284745
+    locked: 1
   - name: Terrian
     uniqueID: 2268873741
     locked: 0
